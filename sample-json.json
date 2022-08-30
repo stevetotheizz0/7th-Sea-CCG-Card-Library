@@ -1,0 +1,38 @@
+{
+  "front": {
+    "destiny": "4",
+    "gametext": "If you just moved a droid to Audience Chamber, deploy on the droid. Droid is an Undercover spy. Wherever opponent has an alien, opponent's battle destiny draws are -2 and Force drains are -1. Immediate Effect canceled if droid leaves Tatooine. (Immune to Control.)",
+    "icons": [
+      "Jabba's Palace"
+    ],
+    "imageUrl": "https://res.starwarsccg.org/cards/JabbasPalace-Light/large/agift.gif",
+    "lore": "'As a token of my good will, I present to you a gift: these two droids. Both are hardworking and will serve you well.'",
+    "subType": "Immediate",
+    "title": "•A Gift",
+    "type": "Effect",
+    "uniqueness": "*"
+  },
+  "gempId": "6_52",
+  "id": 25,
+  "legacy": false,
+  "printings": [
+    {
+      "set": "6"
+    }
+  ],
+  "pulledBy": [
+    "Artoo",
+    "Don't Do That Again",
+    "Don't Do That Again - Defensive Shield",
+    "Don't Do That Again (V) - Defensive Shield",
+    "Harc Seff (V)",
+    "The Signal",
+    "We Wish To Board At Once"
+  ],
+  "rarity": "U",
+  "rulings": [
+    "If the droid is persona replaced, A Gift transfers to the new version, who remains an Undercover spy."
+  ],
+  "set": "6",
+  "side": "Light"
+}
