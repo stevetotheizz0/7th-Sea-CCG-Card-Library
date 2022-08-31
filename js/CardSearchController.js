@@ -504,12 +504,12 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
    * search it really easily
    */
   function flattenCardData(data) {
+    console.log(data);
 
-    var setNameMapping = {};
-    data.sets.forEach(function(set) {
-      set.name = fixReflectionsString(set.Name);
-      setNameMapping[set.id] = set.Name;
-    });
+    // var setNameMapping = {};
+    // data.sets.forEach(function(set) {
+    //   setNameMapping[set.id] = set.Name;
+    // });
 
     for (var i = 0; i < data.cardList.length; i++) {
       var card = data.cardList[i];
