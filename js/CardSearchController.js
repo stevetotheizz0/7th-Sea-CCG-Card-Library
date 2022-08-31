@@ -1,6 +1,6 @@
 'use strict';
 var cardSearchApp = angular.module('cardSearchApp');
-cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http', '$timeout', '$window', '$location', 'CDFService', 'ExportService', 'SWIPService',  function($scope, $document, $http, $timeout, $window, $location, CDFService, ExportService, SWIPService) {
+cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http', '$timeout', '$window', '$location', 'CDFService', 'SWIPService',  function($scope, $document, $http, $timeout, $window, $location, CDFService, SWIPService) {
 
   var LOCAL_STORAGE_DATA_KEY = "scomp_data";
 
