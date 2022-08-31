@@ -32,8 +32,6 @@
     <script src="js/app.js"></script>
     <script src="js/CardSearchController.js"></script>
     <script src="js/CDFService.js"></script>
-    <script src="js/ExportService.js"></script>
-    <!--<script src="js/SWIPExportService.js"></script>-->
     <script src="js/SWIPService.js"></script>
     <script src="js/onLoadError.js"></script>
     <script src="js/onLoadSuccess.js"></script>
@@ -63,121 +61,6 @@
            data-ng-click="hideCardData()"
            outside-click="hideCardData">
 
-        <!-- Extra Card Data -->
-        <div data-ng-if="data.selectedCard != null" class="cs-extra-data" data-ng-click="clickedCardData($event)">
-          <div class="cs-extra-card-data-title">
-            Extra Card Data
-          </div>
-          <div class="" data-ng-if="data.showExtraData">
-            <div data-ng-if="!hasExtraData(data.selectedCard)" class="cs-no-extra-data">
-              No Additional Information
-            </div>
-
-            <!-- Pulls -->
-            <div class="cs-extra-data-column" data-ng-if="data.selectedCard.pulls">
-              <div class="cs-extra-data-label">Pulls:</div>
-              <div data-ng-repeat='pull in data.selectedCard.pulls track by $index'>
-                <div ng-bind-html="pull | to_trusted"></div>
-              </div>
-            </div>
-
-            <!-- Pulled By -->
-            <div class=" cs-extra-data-column" data-ng-if="data.selectedCard.pulledBy">
-              <div class="cs-extra-data-label">Pulled By:</div>
-              <div data-ng-repeat='pulledBy in data.selectedCard.pulledBy track by $index'>
-                <div ng-bind-html="pulledBy | to_trusted"></div>
-              </div>
-            </div>
-
-            <!-- Counterpart -->
-            <div class=" cs-extra-data-column" data-ng-if="data.selectedCard.counterpart">
-              <div class="cs-extra-data-label">Counterpart:</div>
-              <div data-ng-bind-html='data.selectedCard.counterpart | to_trusted'></div>
-            </div>
-
-            <!-- Combo -->
-            <div class=" cs-extra-data-column" data-ng-if="data.selectedCard.combo">
-              <div class="cs-extra-data-label">Combo:</div>
-              <div data-ng-repeat='combo in data.selectedCard.combo track by $index' class="cs-combo-block">
-                <div ng-bind-html="combo | to_trusted"></div>
-              </div>
-            </div>
-            
-            <!-- Matching -->
-            <div class=" cs-extra-data-column" data-ng-if="data.selectedCard.matching">
-              <div class="cs-extra-data-label">Matching:</div>
-              <div data-ng-repeat='matching in data.selectedCard.matching track by $index'>
-                <div ng-bind-html="matching | to_trusted"></div>
-              </div>
-            </div>
-
-            <!-- Matching Weapon -->
-            <div class=" cs-extra-data-column" data-ng-if="data.selectedCard.matchingWeapon">
-              <div class="cs-extra-data-label">Matching Weapon:</div>
-              <div data-ng-repeat='matchingWeapon in data.selectedCard.matchingWeapon track by $index'>
-                <div ng-bind-html="matchingWeapon | to_trusted"></div>
-              </div>
-            </div>
-
-            <!-- Canceled By -->
-            <div class=" cs-extra-data-column" data-ng-if="data.selectedCard.canceledBy">
-              <div class="cs-extra-data-label">Canceled By:</div>
-              <div data-ng-repeat='canceledBy in data.selectedCard.canceledBy track by $index'>
-                <div ng-bind-html="canceledBy | to_trusted"></div>
-              </div>
-            </div>
-
-            <!-- Cancels -->
-            <div class=" cs-extra-data-column" data-ng-if="data.selectedCard.cancels">
-              <div class="cs-extra-data-label">Cancels:</div>
-              <div data-ng-repeat='cancels in data.selectedCard.cancels track by $index'>
-                <div ng-bind-html="cancels | to_trusted"></div>
-              </div>
-            </div>
-
-            <!-- Abbreviation -->
-            <div class=" cs-extra-data-column" data-ng-if="data.selectedCard.abbreviations && data.selectedCard.abbreviations.length > 0">
-              <div class="cs-extra-data-label">Abbreviations:</div>
-              <div data-ng-repeat='abbreviation in data.selectedCard.abbreviations track by $index'>
-                {{abbreviation}}
-              </div>
-            </div>
-
-            <!-- Rulings -->
-            <div class="cs-extra-data-column" data-ng-if="data.selectedCard.rulings">
-              <div class="cs-extra-data-label">Rulings:</div>
-              <div data-ng-repeat='rulings in data.selectedCard.rulings track by $index' class="cs-rulings-block">
-                <div ng-bind-html="rulings | to_trusted"></div>
-              </div>
-            </div>
-
-            <!-- Important Details -->
-            <div class="cs-extra-data-column" ng-if="(data.selectedCard.type == 'Character') || data.selectedCard.characteristics || data.selectedCard.back.characteristics">
-              <div class="cs-extra-data-label">Misc</div>
-              <div >{{data.selectedCard.type}}: {{data.selectedCard.subType}}</div>
-
-              <!-- Characteristics -->
-              <div class="cs-rulings-block cs-camel-cased" data-ng-if="data.selectedCard.characteristics">
-                <ul>
-                  <li data-ng-repeat='characteristics in data.selectedCard.characteristics track by $index'>
-                    <div ng-bind-html="characteristics | to_trusted"></div>
-                  </li>
-                </ul>
-              </div>
-              <div class="cs-rulings-block cs-camel-cased" data-ng-if="data.selectedCard.back.characteristics">
-                <ul>
-                  <li data-ng-repeat='characteristics in data.selectedCard.back.characteristics track by $index'>
-                    <div ng-bind-html="characteristics | to_trusted"></div>
-                  </li>
-                </ul>
-              </div>
-            </div><!-- / important details -->
-
-          </div>
-
-        </div>
-
-
         <!-- Text Card Display -->
         <div data-ng-if="data.textOnly || data.imageLoadFailure" class="cs-card-preview-overlay">
           <div data-ng-click="selectCard(null)">
@@ -193,16 +76,6 @@
               <div class="cs-card-lore">{{data.selectedCard.artist}}</div>
               <div class="cs-card-lore">{{data.selectedCard.mrp}}</div>
               <div class="cs-card-lore">{{data.selectedCard.errata}}</div>
-              <div class="cs-card-destiny">{{data.selectedCard.}}</div>
-              <div class="cs-card-subtype">{{data.selectedCard.boardingAttack}}</div>
-              <div class="cs-card-power">Cannon: {{data.selectedCard.power}}</div>
-              <div class="cs-card-ability" >Sailing: {{data.selectedCard.ability}}</div>
-              <div class="cs-card-ability">Adventure: {{data.selectedCard.maneuver}}</div>
-              <div class="cs-card-ability">Influence: {{data.selectedCard.armor}}</div>
-              <div class="cs-card-hyperspeed">Swashbuckling {{data.selectedCard.hyperspeed}}</div>
-              <div class="cs-card-hyperspeed" data-ng-if="data.selectedCard.moveCost != null">Move Cost: {{data.selectedCard.landspeed}}</div>
-              <div class="cs-card-hyperspeed" data-ng-if="data.selectedCard.crewMax != null">Crew Max: {{data.selectedCard.landspeed}}</div>
-
 
               <div class="cs-card-deploy">{{data.selectedCard.cost}}</div>
               <div class="cs-card-gametext">{{data.selectedCard.Text}}</div>
