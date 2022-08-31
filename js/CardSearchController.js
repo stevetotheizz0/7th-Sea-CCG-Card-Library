@@ -31,7 +31,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
 
   $scope.data = {
     matches: [],
-    cardList: [], // From Dark.json & Light.json
+    cardList: [], // From 7thSea.json
     sets: [], // From sets.json
     loading7thSea: true,
     loadingSets: true,
@@ -413,19 +413,10 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
 
     $scope.downloadedData.cardList = [];
 
-    $http.get('Light.json').success(function(data) {
+    $http.get('7thSea.json').success(function(data) {
+      console.log(data);
       addCardsFromJson(data);
-      $scope.downloadedData.loadingLight = false;
-  
-      massageData();
-    }).error(function(err) {
-      console.error("Data load failure. Defaulting to text-only");
-      $scope.data.textOnly = true;
-    });
-  
-    $http.get('Dark.json').success(function(data) {
-      addCardsFromJson(data);
-      $scope.downloadedData.loadingDark = false;
+      $scope.downloadedData.loading7thSea = false;
   
       massageData();
     }).error(function(err) {
