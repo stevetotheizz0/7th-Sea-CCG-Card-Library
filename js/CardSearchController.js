@@ -565,11 +565,14 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
   }
 
   function addCardsFromJson(cardData) {
-    var cards = cardData.cards;
+    console.log(cardData);
+    var cards = cardData;
+    console.log(cards);
     for (var i = 0; i < cards.length; i++) {
       var card = cards[i];
       $scope.downloadedData.cardList.push(card);
     }
+    console.log($scope.downloadedData.cardList);
   }
 
   /**
