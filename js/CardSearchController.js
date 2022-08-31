@@ -213,7 +213,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
 
   $scope.clearFilter = function() {
     $scope.data.advancedConditions = [];
-    $scope.data.advancedField = "gametext";
+    $scope.data.advancedField = "Text";
     $scope.data.advancedOperator = "contains";
     doSearch();
   };
@@ -265,7 +265,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
 
   $scope.search = {
     type: "ALL",
-    searchField: "TITLE",
+    searchField: "NAME",
     text: ""
   };
 
@@ -296,17 +296,17 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
           rules: [
             {
               condition: 'contains',
-              field: 'gametext',
+              field: 'Text',
               data: searchText
             },
             {
               condition: 'contains',
-              field: 'lore',
+              field: 'FlavorText',
               data: searchText
             },
             {
               condition: 'contains',
-              field: 'title',
+              field: 'Name',
               data: searchText
             },
 
@@ -317,34 +317,22 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
     if (searchText !== "" && $scope.search.searchField === "GAMETEXT") {
       andSearches.push({
         condition: 'contains',
-        field: 'gametext',
+        field: 'Text',
         data: searchText
       });
     }
-    if (searchText !== "" && $scope.search.searchField === "LORE") {
+    if (searchText !== "" && $scope.search.searchField === "FLAVORTEXT") {
       andSearches.push({
         condition: 'contains',
-        field: 'lore',
+        field: 'FlavorText',
         data: searchText
       });
     }
     if (searchText !== "" && $scope.search.searchField === "TITLE") {
       andSearches.push({
-        group: {
-          operator: 'OR',
-          rules: [
-            {
               condition: 'contains',
-              field: 'title',
+              field: 'Name',
               data: searchText
-            },
-            {
-              condition: 'contains',
-              field: 'abbreviations',
-              data: searchText
-            }
-          ]
-        }
       });
     }
 
@@ -474,8 +462,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
     // }
 
     // Once we have all of the real data loaded. Move it into the active data!
-    if (!$scope.downloadedData.loadingLight &&
-        !$scope.downloadedData.loadingDark &&
+    if (!$scope.downloadedData.loading7thSea &&
         !$scope.downloadedData.loadingSets)
     {
       swapActiveDataWithLoadedData($scope.downloadedData);
@@ -486,8 +473,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
   function swapActiveDataWithLoadedData(downloadedData) {
     $scope.data.cardList = downloadedData.cardList;
     $scope.data.sets = downloadedData.sets;
-    $scope.data.loadingLight = downloadedData.loadingLight;
-    $scope.data.loadingDark = downloadedData.loadingDark;
+    $scope.data.loading7thSea = downloadedData.loading7thSea;
     $scope.data.loadingSets = downloadedData.loadingSets;
     $scope.data.cardValueMap = downloadedData.cardValueMap;
     $scope.data.cardFields = downloadedData.cardFields;
@@ -511,8 +497,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
 
         $scope.data.cardList = cachedData.cardList;
         $scope.data.sets = cachedData.sets;
-        $scope.data.loadingLight = cachedData.loadingLight;
-        $scope.data.loadingDark = cachedData.loadingDark;
+        $scope.data.loading7thSea = cachedData.loading7thSea;
         $scope.data.loadingSets = cachedData.loadingSets;
         $scope.data.cardValueMap = cachedData.cardValueMap;
         $scope.data.cardFields = cachedData.cardFields;
@@ -523,13 +508,6 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
     }
   }
 
-  function setNameFromSetId(setId, setNameMapping) {
-    if (setNameMapping[setId]) {
-      return setNameMapping[setId];
-    }
-    return setId;
-  }
-
   /**
    * We want the card data in a flat data structure so we can
    * search it really easily
@@ -538,20 +516,15 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
 
     var setNameMapping = {};
     data.sets.forEach(function(set) {
-      set.name = fixReflectionsString(set.name);
-      setNameMapping[set.id] = set.name;
+      set.name = fixReflectionsString(set.Name);
+      setNameMapping[set.id] = set.Name;
     });
 
     for (var i = 0; i < data.cardList.length; i++) {
       var card = data.cardList[i];
-      card.titleSortable = CDFService.getSimpleName(card.front.title);
-      card.set = setNameFromSetId(card.set, setNameMapping);
-      card.setAbbreviation = getSetAbbreviation(card.set);
+      card.titleSortable = CDFService.getSimpleName(card.Name);
       
-      card.links = [card.front.imageUrl];
-      if (card.back && card.back.imageUrl) {
-        card.links.push(card.back.imageUrl);
-      }
+      card.links = [card.Picture];
       card.links_large = card.links;
       if (card.links_large.length > 0) {
         card.links_large[0] = card.links_large[0].replace("?raw=true", "");
@@ -559,51 +532,18 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
       if (card.links_large.length > 1) {
         card.links_large[1] = card.links_large[1].replace("?raw=true", "");
       }
-      card.abbreviations = card.abbr ?? [];      
 
-      addCardDataToFrontBack(card, card.front);
-      addCardDataToFrontBack(card, card.back);
+      convertNumberDataFromStrings(card);
 
-      convertNumberDataFromStrings(card.front);
-      convertNumberDataFromStrings(card.back);
-
-      fixIcons(card.front);
-      fixIcons(card.back);
-
-      fixGametext(card.front);
-      fixGametext(card.back);
     }
 
     console.log("Added titles for card count: " + $scope.data.cardList.length);
-  }
-
-  function fixGametext(cardFrontOrBack) {
-    if (!cardFrontOrBack || !cardFrontOrBack.gametext) return;
-
-    cardFrontOrBack.gametext = cardFrontOrBack.gametext.replaceAll('Reflections III', 'Reflections 3');
-    cardFrontOrBack.gametext = cardFrontOrBack.gametext.replaceAll('Reflections II', 'Reflections 2');
-    cardFrontOrBack.gametext = cardFrontOrBack.gametext.replaceAll('Reflections I', 'Reflections 1');
-
-    if (cardFrontOrBack.characteristics) {
-      cardFrontOrBack.characteristics.sort(sortIgnoreCase)
-    }
   }
 
   function sortIgnoreCase(a, b) {
     if (a.toLowerCase() < b.toLowerCase()) return -1;
     if (a.toLowerCase() > b.toLowerCase()) return 1;
     return 0;
-  }
-
-  function fixIcons(cardFrontOrBack) {
-    if (!cardFrontOrBack) return;
-
-    var icons = cardFrontOrBack.icons;
-    if (icons) {
-      icons.forEach(function(icon, index) {
-        icons[index] = fixReflectionsString(icon);
-      });
-    }
   }
 
   /*
@@ -628,16 +568,9 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
     var cards = cardData.cards;
     for (var i = 0; i < cards.length; i++) {
       var card = cards[i];
-
-      // Trim some data to save space
-      delete card.id;
-      delete card.gempId;
-      delete card.printings;
-
       $scope.downloadedData.cardList.push(card);
     }
   }
-
 
   /**
    * Build a list of all of the card fields
@@ -651,136 +584,10 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
   }
 
   function getSimpleName(cardName) {
-    var titleSortable = cardName.replace("•", "");
-    titleSortable = titleSortable.replace("•", "");
-    titleSortable = titleSortable.replace("•", "");
-    titleSortable = titleSortable.replace("•", "");
-
-    titleSortable = titleSortable.replace("<>", "");
-    titleSortable = titleSortable.replace("<>", "");
-    titleSortable = titleSortable.replace("<>", "");
-
-    titleSortable = titleSortable.toLowerCase();
+    var titleSortable = titleSortable.toLowerCase();
     titleSortable = titleSortable.replace("é", "e");
-
-    titleSortable = titleSortable.replace("ï¿½", "e");
-
-    titleSortable = titleSortable.replace(/\'/g, "");
-    titleSortable = titleSortable.replace(/\"/g, "");
-
     return titleSortable;
   }
-
-
-  function getSetAbbreviation(setName) {
-    switch (setName) {
-      case "Premiere": {
-        return "P";
-      }
-      case "A New Hope": {
-        return "ANH";
-      }
-      case "Hoth": {
-        return "H";
-      }
-      case "Dagobah": {
-        return "DAG";
-      }
-      case "Jabba's Palace": {
-        return "JP";
-      }
-      case "Cloud City": {
-        return "CC";
-      }
-      case "Special Edition": {
-        return "SE";
-      }
-      case "Endor": {
-        return "EDR";
-      }
-      case "Enhanced Cloud City": {
-        return "ECC";
-      }
-      case "Enhanced Premiere": {
-        return "EP";
-      }
-      case "Enhanced Jabba's Palace": {
-        return "EJP";
-      }
-      case "Official Tournament Sealed Deck": {
-        return "OTSD";
-      }
-      case "Jabba's Palace Sealed Deck": {
-        return "JPSD";
-      }
-      case "Jedi Pack": {
-        return "JEDI";
-      }
-      case "Premiere Introductory Two Player Game": {
-        return "P2PG";
-      }
-      case "Empire Strikes Back Introductory Two Player Game": {
-        return "H2PG";
-      }
-      case "Third Anthology": {
-        return "3ANTH";
-      }
-      case "Second Anthology": {
-        return "2ANTH";
-      }
-      case "First Anthology": {
-        return "1ANTH";
-      }
-      case "Death Star II": {
-        return "DS2";
-      }
-      case "Tatooine": {
-        return "TAT";
-      }
-      case "Coruscant": {
-        return "COR";
-      }
-      case "Theed Palace": {
-        return "TP";
-      }
-      case "Reflections I": {
-        return "Ref1";
-      }
-      case "Reflections 1": {
-        return "Ref1";
-      }
-      case "Reflections II": {
-        return "Ref2";
-      }
-      case "Reflections 2": {
-        return "Ref2";
-      }
-      case "Reflections III": {
-        return "Ref3";
-      }
-      case "Reflections 3": {
-        return "Ref3";
-      }
-      case "Demo Deck": {
-        return "Demo";
-      }
-      default: {
-        var abbreviation = "";
-        var splitWords = setName.split(" ");
-
-        if (-1 !== setName.indexOf("Virtual Set")) {
-          return setName.replace("Virtual Set ", "V");
-        }
-
-        for (var i = 0; i < splitWords.length; i++) {
-          var firstLetter = splitWords[i].substring(0, 1);
-          abbreviation += firstLetter.toUpperCase();
-        }
-        return abbreviation;
-      }
-    }
-  }
-
 
   $scope.searchIfNotEmpty = function() {
     if ($scope.search.text.trim() !== "") {
@@ -793,9 +600,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
    * Compare the given field, returning true on match and false otherwise
    */
   function compareFields(card, fieldName, compareType, value) {
-
-    return compareFieldsToCardSide(card.front, fieldName, compareType, value) ||
-           compareFieldsToCardSide(card.back, fieldName, compareType, value);
+    return compareFieldsToCardSide(card, fieldName, compareType, value) ;
   }
 
   function compareFieldsToCardSide(card, fieldName, compareType, value) {
@@ -961,30 +766,6 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
     return cardsInBothLists;
   }
 
-
-  /**
-   * Match cards based on a given rule
-   */
-  function getCardsMatchingSimpleRule(rule) {
-
-    var matches = [];
-    for (var i = 0; i < $scope.data.cardList.length; i++) {
-      var card = $scope.data.cardList[i];
-
-      // Empty field. Just ignore it!
-      if (rule.data === "") {
-        matches.push(card);
-        continue;
-      }
-
-      if (compareFields(card, rule.field, rule.condition, rule.data)) {
-        matches.push(card);
-      }
-    }
-    return matches;
-  }
-
-
   /**
    * Match cards based on a group of data
    */
@@ -1009,48 +790,6 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
     }
 
     return cumulativeCardsMatchingRules;
-  }
-
-
-  function removeCardsFromList(cardList, cardsToExclude) {
-    var filteredList = [];
-
-    for (var i = 0; i < cardList.length; i++) {
-      var card = cardList[i];
-      var exclude = false;
-
-      for (var j = 0; j < cardsToExclude.length; j++) {
-        var excludedCard = cardsToExclude[j];
-        if (card === excludedCard) {
-          exclude = true;
-          break;
-        }
-      }
-
-      if (!exclude) {
-        filteredList.push(card);
-      }
-    }
-
-    return filteredList;
-  }
-
-
-
-  /**
-   * Get cards that match a given rule (may be complex or simple)
-   */
-  function getCardsMatchingRule(rule) {
-
-    if (rule.condition) {
-
-      // This is a specific condition, not another rule
-      return getCardsMatchingSimpleRule(rule);
-
-    } else if (rule.group) {
-
-      return getCardsMatchingRuleGroup(rule.group);
-    }
   }
 
   function clearSearch() {
@@ -1128,13 +867,6 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
       return;
     }
 
-    var matchingCards = getCardsMatchingRule(searchCriteria);
-    var excludeCards = getCardsMatchingRule(excludeCriteria);
-
-    matchingCards = removeCardsFromList(matchingCards, excludeCards);
-
-    $scope.data.matches = matchingCards;
-
     if ($scope.data.matches.length === 0) {
       $scope.data.noResultsFound = true;
     /*
@@ -1168,16 +900,23 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
   };
 
   $scope.hasExtraData = function(card) {
-    return  card.pulls ||
-            card.pulledBy ||
-            card.counterpart ||
-            card.combo ||
-            card.rulings ||
-            card.matching ||
-            card.matchingWeapon ||
-            card.canceledBy ||
-            card.cancels ||
-            card.abbreviations;
+    return  card.Name ||
+            card.Type ||
+            card.Rarity ||
+            card.Set ||
+            card.Faction ||
+            card.Affiliation ||
+            card.Cost ||
+            card.Cannon ||
+            card.Sail ||
+            card.Adventure ||
+            card.Influence ||
+            card.Swashbuckling ||
+            card.Trait ||
+            card.Text ||
+            card.Errata ||
+            card.MRP ||
+            card.Artist;
   };
 
 

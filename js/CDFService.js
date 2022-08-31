@@ -2,46 +2,15 @@
 var cardSearchApp = angular.module('cardSearchApp');
 cardSearchApp.service('CDFService', [function() {
 
-  /*
-  var CARD_TYPES = {
-    ALL: "ALL",
-    ADMIRALS_ORDER: "ADMIRALS_ORDER",
-    CHARACTER: "CHARACTER",
-    CREATURE: "CREATURE",
-    DEVICE: "DEVICE",
-    DEFENSIVE_SHIELD: "DEFENSIVE_SHIELD",
-    EFFECT: "EFFECT",
-    EPIC_EVENT: "EPIC_EVENT",
-    INTERRUPT: "INTERRUPT",
-    JEDI_TEST: "JEDI_TEST",
-    LOCATION: "LOCATION",
-    OBJECTIVE: "OBJECTIVE",
-    Podracer: "PODRACER",
-    STARSHIP: "STARSHIP",
-    VEHICLE: "VEHICLE",
-    WEAPON: "WEAPON",
-    UNKNOWN: "UNKNOWN"
-  };
-  */
-
   var CARD_TYPE_SEARCH_STRING = {
-    ADMIRALS_ORDER: "admiral",
-    CHARACTER: "character",
-    CREATURE: "creature",
-    DEVICE: "device",
-    DEFENSIVE_SHIELD: "defensive",
-    EFFECT: "effect",
-    EPIC_EVENT: "epic",
-    INTERRUPT: "interrupt",
-    JEDI_TEST: "jedi test",
-    LOCATION: "location",
-    OBJECTIVE: "objective",
-    PODRACER: "podracer",
-    STARSHIP: "starship",
-    VEHICLE: "vehicle",
-    WEAPON: "weapon"
+    ACTION: "Action",
+    ADVENTURE: "Adventure",
+    ATTACHMENT: "Attachment",
+    CAPTAIN: "Captain",
+    CHANTEY: "Chantey",
+    CREW: "Crew",
+    SHIP: "Ship",
   };
-
 
   this.getTypeSearchStringFromType = function(cardTypeEnum) {
     if (CARD_TYPE_SEARCH_STRING[cardTypeEnum]) {

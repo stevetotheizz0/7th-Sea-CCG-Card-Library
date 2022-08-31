@@ -152,14 +152,14 @@
             </div>
 
             <!-- Important Details -->
-            <div class="cs-extra-data-column" ng-if="(data.selectedCard.front.type == 'Character') || data.selectedCard.front.characteristics || data.selectedCard.back.characteristics">
+            <div class="cs-extra-data-column" ng-if="(data.selectedCard.type == 'Character') || data.selectedCard.characteristics || data.selectedCard.back.characteristics">
               <div class="cs-extra-data-label">Misc</div>
-              <div >{{data.selectedCard.front.type}}: {{data.selectedCard.front.subType}}</div>
+              <div >{{data.selectedCard.type}}: {{data.selectedCard.subType}}</div>
 
               <!-- Characteristics -->
-              <div class="cs-rulings-block cs-camel-cased" data-ng-if="data.selectedCard.front.characteristics">
+              <div class="cs-rulings-block cs-camel-cased" data-ng-if="data.selectedCard.characteristics">
                 <ul>
-                  <li data-ng-repeat='characteristics in data.selectedCard.front.characteristics track by $index'>
+                  <li data-ng-repeat='characteristics in data.selectedCard.characteristics track by $index'>
                     <div ng-bind-html="characteristics | to_trusted"></div>
                   </li>
                 </ul>
@@ -195,17 +195,17 @@
               <div class="cs-card-lore">{{data.selectedCard.errata}}</div>
               <div class="cs-card-destiny">{{data.selectedCard.}}</div>
               <div class="cs-card-subtype">{{data.selectedCard.boardingAttack}}</div>
-              <div class="cs-card-power">Cannon: {{data.selectedCard.front.power}}</div>
-              <div class="cs-card-ability" >Sailing: {{data.selectedCard.front.ability}}</div>
-              <div class="cs-card-ability">Adventure: {{data.selectedCard.front.maneuver}}</div>
-              <div class="cs-card-ability">Influence: {{data.selectedCard.front.armor}}</div>
-              <div class="cs-card-hyperspeed">Swashbuckling {{data.selectedCard.front.hyperspeed}}</div>
-              <div class="cs-card-hyperspeed" data-ng-if="data.selectedCard.front.moveCost != null">Move Cost: {{data.selectedCard.front.landspeed}}</div>
-              <div class="cs-card-hyperspeed" data-ng-if="data.selectedCard.front.crewMax != null">Crew Max: {{data.selectedCard.front.landspeed}}</div>
+              <div class="cs-card-power">Cannon: {{data.selectedCard.power}}</div>
+              <div class="cs-card-ability" >Sailing: {{data.selectedCard.ability}}</div>
+              <div class="cs-card-ability">Adventure: {{data.selectedCard.maneuver}}</div>
+              <div class="cs-card-ability">Influence: {{data.selectedCard.armor}}</div>
+              <div class="cs-card-hyperspeed">Swashbuckling {{data.selectedCard.hyperspeed}}</div>
+              <div class="cs-card-hyperspeed" data-ng-if="data.selectedCard.moveCost != null">Move Cost: {{data.selectedCard.landspeed}}</div>
+              <div class="cs-card-hyperspeed" data-ng-if="data.selectedCard.crewMax != null">Crew Max: {{data.selectedCard.landspeed}}</div>
 
 
               <div class="cs-card-deploy">{{data.selectedCard.cost}}</div>
-              <div class="cs-card-gametext">{{data.selectedCard.front.gametext}}</div>
+              <div class="cs-card-gametext">{{data.selectedCard.Text}}</div>
             </div>
           </div>
         </div>
@@ -259,8 +259,8 @@
               <option value="ALL">Any</option>
               <option value="TITLE">Title</option>
               <option value="TRAIT">Trait</option>
-              <option value="GAMETEXT">Gametext</option>
-              <option value="FLAVOR">Flavor Text</option>
+              <option value="TEXT">Gametext</option>
+              <option value="FLAVORTEXT">Flavor Text</option>
             </select>
           </div>
 
