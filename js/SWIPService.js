@@ -14,7 +14,6 @@ cardSearchApp.service('SWIPService', ['CDFService', function(CDFService) {
   var isCanceledByHeaderIndex = -1;
   var cancelsHeaderIndex = -1;
   var abreviationHeaderIndex = -1;
-  var characteristicsHeaderIndex = -1;
   var uniquenessHeaderIndex = -1;
 
   function getDataAtIndex(splitData, index) {
@@ -42,9 +41,7 @@ cardSearchApp.service('SWIPService', ['CDFService', function(CDFService) {
     setName = setName.replace("Premiere 2 Player", "Premiere Introductory Two Player Game");
     return setName;
   }
-  function getCharacteristics(splitData) {
-    return getDataAtIndex(splitData, characteristicsHeaderIndex);
-  }
+
   function getUniqueness(splitData) {
     return getDataAtIndex(splitData, uniquenessHeaderIndex);
   }
@@ -113,7 +110,6 @@ cardSearchApp.service('SWIPService', ['CDFService', function(CDFService) {
     isCanceledByHeaderIndex = headers.indexOf('IsCanceledBy');
     abreviationHeaderIndex = headers.indexOf('Abbreviation');
     uniquenessHeaderIndex = headers.indexOf("Uniqueness");
-    characteristicsHeaderIndex = headers.indexOf("Characteristics");
   }
 
   function addSwipDataFromSwipDump(data, existingCards) {
@@ -152,7 +148,6 @@ cardSearchApp.service('SWIPService', ['CDFService', function(CDFService) {
         existingCard.canceledBy = getCanceledBy(cardDataFields);
         existingCard.cancels = getCancels(cardDataFields);
         existingCard.abbreviation = getAbbreviations(cardDataFields);
-        existingCard.characteristics = getCharacteristics(cardDataFields);
         existingCard.uniqueness = getUniqueness(cardDataFields);
       } else {
         console.log("Failed to find card: " + cardWithoutSetInfo + " cardExpansion: " + cardExpansion);
