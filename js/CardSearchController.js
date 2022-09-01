@@ -148,6 +148,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
   $scope.conditionToString = conditionToString;
 
   $scope.selectCondition = function(condition) {
+    console.log("select condition");
     for (var i = 0; i < $scope.data.advancedConditions.length; i++) {
       var cond = $scope.data.advancedConditions[i];
       cond.selected = false;
@@ -195,6 +196,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
     }
 
     $scope.data.advancedValue = "";
+    console.log("$select: ", $select);
     $select.search = "";
 
     doSearch();
@@ -212,6 +214,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
   };
 
   $scope.clearFilter = function() {
+    console.log("clear filter");
     $scope.data.advancedConditions = [];
     $scope.data.advancedField = "Text";
     $scope.data.advancedOperator = "contains";
@@ -287,6 +290,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
 
     var andSearches = [];
     var searchText = $scope.search.text.toLowerCase().trim();
+    console.log("searchText: ", searchText, "$scope.search:", $scope.search); 
 
     // Specific Search Fields
     if (searchText !== "" && $scope.search.searchField === "ALL") {
@@ -328,13 +332,23 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
         data: searchText
       });
     }
-    if (searchText !== "" && $scope.search.searchField === "TITLE") {
+    if (searchText !== "" && $scope.search.searchField === "NAME") {
       andSearches.push({
               condition: 'contains',
               field: 'Name',
               data: searchText
       });
     }
+
+    if ($scope.search.type !== "ALL") {
+      var requiredType = CDFService.getTypeSearchStringFromType($scope.search.type);
+      andSearches.push({
+        condition: 'contains',
+        field: 'Type',
+        data: requiredType
+      });
+    }
+    console.log("andSearches:", andSearches);
 
     return andSearches;
   }
@@ -347,15 +361,17 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
   function buildCumulativeSearch() {
 
     var basicSearches = getBasicAndSearches();
+    console.log("basic searches: ", basicSearches)
     var cumulativeSearch = {
       group: {
         operator: "AND",
         rules: basicSearches
       }
     };
-
+    console.log( "$scope.data.advancedConditions: ", $scope.data.advancedConditions);
     for (var i = 0; i < $scope.data.advancedConditions.length; i++) {
       var condition = $scope.data.advancedConditions[i];
+      console.log("condition: ", condition);
       if (!condition.isExcludeCondition) {
         cumulativeSearch.group.rules.push(condition);
       }
@@ -423,6 +439,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
       console.error("Data load failure. Defaulting to text-only");
       $scope.data.textOnly = true;
     });
+    console.log("cards reloaded");
 
   };
 
@@ -556,9 +573,9 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
   }
 
   function addCardsFromJson(cardData) {
-    console.log(cardData);
+    console.log("addCardsFromJson(cardData): ", cardData);
     var cards = cardData;
-    console.log(cards);
+    console.log(cards, "card length: ", cards.length);
     for (var i = 0; i < cards.length; i++) {
       var card = cards[i];
       $scope.downloadedData.cardList.push(card);
@@ -584,6 +601,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
   }
 
   $scope.searchIfNotEmpty = function() {
+    console.log("search if not empty");
     if ($scope.search.text.trim() !== "") {
       $scope.doSearch();
     }
@@ -760,6 +778,33 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
     return cardsInBothLists;
   }
 
+    /**
+   * Match cards based on a given rule
+   */
+     function getCardsMatchingSimpleRule(rule) {
+      console.log("getCardsMatchingSimpleRule: ", rule);
+
+      var matches = [];
+      for (var i = 0; i < $scope.data.cardList.length; i++) {
+        var card = $scope.data.cardList[i];
+        //if (card.legacy) {
+        //  continue;
+        //}
+  
+        // Empty field. Just ignore it!
+        if (rule.data === "") {
+          matches.push(card);
+          continue;
+        }
+  
+        if (compareFields(card, rule.field, rule.condition, rule.data)) {
+          matches.push(card);
+        }
+      }
+      console.log("matches: ", matches);
+      return matches;
+    }
+
   /**
    * Match cards based on a group of data
    */
@@ -786,8 +831,77 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
     return cumulativeCardsMatchingRules;
   }
 
+
+  /**
+   * Match cards based on a group of data
+   */
+   function getCardsMatchingRuleGroup(group) {
+    // Evaluate the group of rules using AND or OR
+    var firstRule = true;
+    var cumulativeCardsMatchingRules = [];
+
+    for (var i = 0; i < group.rules.length; i++) {
+      var subRule = group.rules[i];
+      var cardsMatchingRule = getCardsMatchingRule(subRule);
+
+      if (group.operator === "AND") {
+        if (firstRule) {
+          cumulativeCardsMatchingRules = cardsMatchingRule;
+          firstRule = false;
+        }
+        cumulativeCardsMatchingRules = getCardsInBothLists(cumulativeCardsMatchingRules, cardsMatchingRule);
+      } else if (group.operator === "OR") {
+        cumulativeCardsMatchingRules = getCardsInAnyList(cumulativeCardsMatchingRules, cardsMatchingRule);
+      }
+    }
+
+    return cumulativeCardsMatchingRules;
+  }
+
+
+  function removeCardsFromList(cardList, cardsToExclude) {
+    var filteredList = [];
+
+    for (var i = 0; i < cardList.length; i++) {
+      var card = cardList[i];
+      var exclude = false;
+
+      for (var j = 0; j < cardsToExclude.length; j++) {
+        var excludedCard = cardsToExclude[j];
+        if (card === excludedCard) {
+          exclude = true;
+          break;
+        }
+      }
+
+      if (!exclude) {
+        filteredList.push(card);
+      }
+    }
+
+    return filteredList;
+  }
+
+
+
+  /**
+   * Get cards that match a given rule (may be complex or simple)
+   */
+  function getCardsMatchingRule(rule) {
+
+    if (rule.condition) {
+
+      // This is a specific condition, not another rule
+      return getCardsMatchingSimpleRule(rule);
+
+    } else if (rule.group) {
+
+      return getCardsMatchingRuleGroup(rule.group);
+    }
+  }
+
   function clearSearch() {
-    $scope.search.side = "ALL";
+    console.log("clear search");
     $scope.search.type = "ALL";
     $scope.search.searchField = "TITLE";
     $scope.search.text = "";
@@ -799,8 +913,10 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
    * Perform a search
    */
   function doSearch() {
+    console.log("do search");
     var cumulativeSearch = buildCumulativeSearch();
     var searchToExclude = buildSearchToExclude();
+    console.log("cumulativeSearch", cumulativeSearch,"searchToExclude: ", searchToExclude );
 
     performSearchAndDisplayResults(cumulativeSearch, searchToExclude);
   }
@@ -855,11 +971,17 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
     $scope.data.noResultsFound = false;
     $scope.data.performedSearch = true;
     $scope.data.matches = [];
+    console.log("search criteria", searchCriteria);
 
     if (!searchCriteria) {
       $scope.data.performedSearch = false;
       return;
     }
+    var matchingCards = getCardsMatchingRule(searchCriteria);
+    var excludeCards = getCardsMatchingRule(excludeCriteria);
+
+    matchingCards = removeCardsFromList(matchingCards, excludeCards);
+    $scope.data.matches = matchingCards;
 
     if ($scope.data.matches.length === 0) {
       $scope.data.noResultsFound = true;

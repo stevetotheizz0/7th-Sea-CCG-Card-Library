@@ -13,6 +13,7 @@ cardSearchApp.service('CDFService', [function() {
   };
 
   this.getTypeSearchStringFromType = function(cardTypeEnum) {
+    console.log("getTypeSearchStringFromType", cardTypeEnum);
     if (CARD_TYPE_SEARCH_STRING[cardTypeEnum]) {
       return CARD_TYPE_SEARCH_STRING[cardTypeEnum];
     }
@@ -255,7 +256,7 @@ cardSearchApp.service('CDFService', [function() {
     delete fieldValueMap.titleSortable;
     // delete fieldValueMap.id;
     delete fieldValueMap.Picture;
-
+    console.log("fieldValueMap from CDF: ", fieldValueMap);
     return fieldValueMap;
   }
   this.getCardValueMap = getCardValueMap;

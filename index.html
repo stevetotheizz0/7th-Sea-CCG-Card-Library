@@ -68,7 +68,7 @@
               <div class="cs-card-type">{{data.selectedCard.set}}</div>
               <div class="cs-card-lore">{{data.selectedCard.rarity}}</div>
               <div class="cs-card-type">{{data.selectedCard.type}}</div>
-              <div class="cs-card-title">{{data.selectedCard.title}}</div>
+              <div class="cs-card-title">{{data.selectedCard.Name}}</div>
               <div class="cs-card-type">{{data.selectedCard.faction}}</div>
               <div class="cs-card-type">{{data.selectedCard.affiliation}}</div>
               <div class="cs-card-subtype">{{data.selectedCard.trait}}</div>
@@ -130,7 +130,7 @@
             <div class="cs-searchLabel">Search In</div>
             <select data-ng-model="search.searchField" class="cs-search-input" data-ng-change="searchIfNotEmpty()">
               <option value="ALL">Any</option>
-              <option value="TITLE">Title</option>
+              <option value="NAME">Name</option>
               <option value="TRAIT">Trait</option>
               <option value="TEXT">Gametext</option>
               <option value="FLAVORTEXT">Flavor Text</option>
@@ -305,7 +305,7 @@
           <tr class="row cs-card-result" data-ng-repeat="card in data.matches track by $index"
                 data-ng-class="{'cs-card-result-selected': card == data.lastSelectedCard}">
             <td class="col-xs-4 cs-link cs-colored-column cs-color-1" data-ng-click="selectCard(card, $event)">
-              {{card.title}}
+              {{card.Name}}
             </td>
             <td class="col-xs-1 cs-color-2">
               {{card.rarity}}
