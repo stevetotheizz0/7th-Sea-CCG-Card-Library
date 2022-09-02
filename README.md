@@ -77,5 +77,5 @@ Done! You should be able to play around with the site locally now.
 
 
 ## Attribution
-* [Scomp was originally created by Thomas Marlin](https://github.com/thomasmarlin)
+* [The 7th Sea Library was converted from another app, Scomp,  created by Thomas Marlin](https://github.com/thomasmarlin)
 
