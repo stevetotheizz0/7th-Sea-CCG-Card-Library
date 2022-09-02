@@ -60,6 +60,28 @@
            class="cs-card-preview-pane"
            data-ng-click="hideCardData()"
            outside-click="hideCardData">
+        
+        <!-- Card Info-->
+
+        <!-- Extra Card Data -->
+        <div data-ng-if="data.selectedCard != null" class="cs-extra-data" data-ng-click="clickedCardData($event)">
+          <div class="cs-extra-card-data-title">
+            Extra Card Data
+          </div>
+          <div class="" data-ng-if="data.showExtraData">
+            <div data-ng-if="!hasExtraData(data.selectedCard)" class="cs-no-extra-data">
+              No Additional Information
+            </div>
+          </div>
+
+          <!-- Pulls -->
+          <div class="cs-extra-data-column">
+            <div class="cs-extra-data-label">Title:</div>
+            <div data-ng-repeat='pull in [data.selectedCard.Name] track by $index'>
+              <div ng-bind-html="pull | to_trusted"></div>
+            </div>
+          </div>
+        </div>
 
         <!-- Text Card Display -->
         <div data-ng-if="data.textOnly || data.imageLoadFailure" class="cs-card-preview-overlay">
@@ -85,6 +107,67 @@
               <img class="cs-card-image-multiple" align="right" data-ng-repeat="link in data.selectedCard.links_large | orderBy:'$index':true" ng-src="{{link}}">
             </div>
           </div>
+
+          <div class="aboutcontainer">
+            <p class="aboutname">
+              <div data-ng-repeat="card in [data.selectedCard] track by $index">
+                <b>
+                  <h4>{{card.Name}}</h4>
+                </b>
+                <b>
+                  {{card.Type}}
+                </b>
+              </div>
+            </p>
+            <!-- <p class="department">
+              {{Faction}} & {{Affiliation/Nationality}}
+            </p> -->
+            <div 
+              class="infocontainer" 
+              data-ng-repeat="card in [data.selectedCard] track by $index"
+            >
+              <div class="basicinfocontainer">
+                <b>Cost: {{card.Cost}}</b>
+                <p class="info">
+                <table style="width:100%">
+                  <tr>
+                    <th><img src="https://sites.google.com/site/7seadatabase/home/images/7sea.icon.skill.cannon.jpg"/></th>
+                    <th><img src="https://sites.google.com/site/7seadatabase/home/images/7sea.icon.skill.sailing.jpg"/></th> 
+                    <th><img src="https://sites.google.com/site/7seadatabase/home/images/7sea.icon.skill.adventuring.jpg"/></th>
+                    <th><img src="https://sites.google.com/site/7seadatabase/home/images/7sea.icon.skill.influence.jpg"/></th>
+                    <th><img src="https://sites.google.com/site/7seadatabase/home/images/7sea.icon.skill.swashbuckling.jpg"/></th>
+                  </tr>
+                  <tr>
+                    <td>{{card.Cannon}}</td>
+                    <td>{{card.Sail}}</td> 
+                    <td>{{card.Adventure}}</td>
+                    <td>{{card.Influence}}</td>
+                    <td>{{card.Swashbuckling}}</td>
+                  </tr>
+                </table><br>
+                <b>Traits</b>: {{card.Trait}} <br>
+                <p>
+                  <b>Text</b>: {{card.Text}} <br>
+                </p>
+                <b>Errata:</b> {{card.Errata}}<br>
+                <b>Boarding Attack: </b>{{card.BoardingAttack}}<br><br>
+                <p>
+                  <b>Flavor: </b><i>{{card.FlavorText}}</i><br><br>
+                </p>
+                <b>Rarity</b>: {{card.Rarity}} <br>
+                <b>Set</b>: {{card.Set}}</p>
+              </div> 
+              <!-- <div class="basicinfocontainer">
+                <b>Other Information</b>
+                <p class="info"">
+                <b>Artist: </b>{{Artist}}<br>
+                  <b>Most Recent Printing? </b>{{Most Recent Printing}}<br>
+                  <b>Changes on MRP:</b> {{Changes on MRP}}<br>
+                </p>
+              </div> -->
+            </div> 
+          </div>
+
           <button
           class="cs-row-full-width button-hide-card-data"
             @click="hideCardData"
@@ -105,7 +188,7 @@
           <!-- Type -->
           <div class="cs-searchField">
             <div class="cs-searchLabel">Type</div>
-            <select data-ng-model="search.type" class="cs-search-input" data-ng-change="searchIfNotEmpty()">
+            <select data-ng-model="search.type" class="input-sm cs-search-input" data-ng-change="searchIfNotEmpty()">
               <option value="ALL">Any</option>
               <option value="ACTION">Action</option>
               <option value="ADVENTURE">Adventure</option>
@@ -120,7 +203,7 @@
           <!-- Search Field -->
           <div class="cs-searchField">
             <div class="cs-searchLabel">Search In</div>
-            <select data-ng-model="search.searchField" class="cs-search-input" data-ng-change="searchIfNotEmpty()">
+            <select data-ng-model="search.searchField" class="input-sm cs-search-input" data-ng-change="searchIfNotEmpty()">
               <option value="ALL">Any</option>
               <option value="NAME">Name</option>
               <option value="TRAIT">Trait</option>

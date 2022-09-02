@@ -592,6 +592,15 @@ div.ability-jedi-master      { background-color:#bfffbf; }
 div.ability-dark-jedi        { background-color:#ffc0bf; }
 div.ability-dark-jedi-master { background-color:#ff7f80; }
 
+.aboutcontainer {
+  background-color: #f2f2f2;
+}
+.infocontainer {
+  max-width: 280px;
+  display: inline-flex;
+}
+
+
 @media (min-height: 1025px) {
   #results-link {
     display: none;
