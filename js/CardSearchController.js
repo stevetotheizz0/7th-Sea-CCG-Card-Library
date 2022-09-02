@@ -530,7 +530,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
 
     for (var i = 0; i < data.cardList.length; i++) {
       var card = data.cardList[i];
-      card.titleSortable = CDFService.getSimpleName(card.Name);
+      card.titleSortable = CDFService.getSimpleName(card.Name) + card.Set;
       
       card.links = [card.Picture];
       card.links_large = card.links;
@@ -783,7 +783,6 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
    */
      function getCardsMatchingSimpleRule(rule) {
       console.log("getCardsMatchingSimpleRule: ", rule);
-
       var matches = [];
       for (var i = 0; i < $scope.data.cardList.length; i++) {
         var card = $scope.data.cardList[i];
@@ -800,8 +799,9 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
         if (compareFields(card, rule.field, rule.condition, rule.data)) {
           matches.push(card);
         }
+        
       }
-      console.log("matches: ", matches);
+      console.log("matches: ", matches, "$scope.data.matches",  $scope.data.matches);
       return matches;
     }
 
@@ -810,6 +810,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
    */
   function getCardsMatchingRuleGroup(group) {
     // Evaluate the group of rules using AND or OR
+    console.log("getCardsMatchingRuleGroup I THINK ISSUE IS HERE", group);
     var firstRule = true;
     var cumulativeCardsMatchingRules = [];
 
@@ -827,7 +828,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
         cumulativeCardsMatchingRules = getCardsInAnyList(cumulativeCardsMatchingRules, cardsMatchingRule);
       }
     }
-
+    console.log("getCardsMatchingRuleGroup I THINK ISSUE IS HERE", cumulativeCardsMatchingRules);
     return cumulativeCardsMatchingRules;
   }
 
@@ -888,15 +889,19 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
    * Get cards that match a given rule (may be complex or simple)
    */
   function getCardsMatchingRule(rule) {
-
+    console.log("getCardsMatchingRuleGroup I THINK ISSUE IS HERE", rule);
     if (rule.condition) {
 
       // This is a specific condition, not another rule
-      return getCardsMatchingSimpleRule(rule);
+      const simpleRuleMatch = getCardsMatchingSimpleRule(rule);
+      console.log("simple rule", simpleRuleMatch);
+      return simpleRuleMatch;
 
     } else if (rule.group) {
-
-      return getCardsMatchingRuleGroup(rule.group);
+      console.log("rule group", rule.group);
+      let ruleGroup  = getCardsMatchingRuleGroup(rule.group);
+      return ruleGroup;
+      
     }
   }
 
@@ -929,28 +934,16 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
     if(a.titleSortable > b.titleSortable) {
       return 1;
     }
-    if(a.type < b.type) {
+    if(a.Type < b.Type) {
       return -1;
     }
-    if(a.type > b.type) {
+    if(a.Type > b.Type) {
       return 1;
     }
-    if(a.subType < b.subType) {
+    if(a.Set < b.Set) {
       return -1;
     }
-    if(a.subType > b.subType) {
-      return 1;
-    }
-    if(a.side < b.side) {
-      return -1;
-    }
-    if(a.side > b.side) {
-      return 1;
-    }
-    if(a.set < b.set) {
-      return -1;
-    }
-    if(a.set > b.set) {
+    if(a.Set > b.Set) {
       return 1;
     }
 
@@ -977,26 +970,30 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
       $scope.data.performedSearch = false;
       return;
     }
+    console.log("this should be before line 804");
     var matchingCards = getCardsMatchingRule(searchCriteria);
-    var excludeCards = getCardsMatchingRule(excludeCriteria);
+    // var excludeCards = getCardsMatchingRule(excludeCriteria);
+    console.log("matching Cards: ", matchingCards);
 
-    matchingCards = removeCardsFromList(matchingCards, excludeCards);
+    // matchingCards = removeCardsFromList(matchingCards, excludeCards);
     $scope.data.matches = matchingCards;
-
+    console.log("$scope.data.matches: ", $scope.data.matches)
+    
     if ($scope.data.matches.length === 0) {
       $scope.data.noResultsFound = true;
-    /*
-     * If the length of the found cards is exactly 1 card,
-     * then click the card and display it.
-     */
+      /*
+      * If the length of the found cards is exactly 1 card,
+      * then click the card and display it.
+      */
     } else if ($scope.data.matches.length === 1) {
       $scope.data.noResultsFound = false;
       selectCardAtIndex(0);
     } else {
       $scope.data.noResultsFound = false;
     }
-
+    
     $scope.data.matches.sort(sortByName);
+    console.log("$scope.data.matches: ", $scope.data.matches)
     $scope.data.showAdvancedSearch = false;
   } // function performSearchAndDisplayResults
 
