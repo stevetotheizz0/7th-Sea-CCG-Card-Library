@@ -42,6 +42,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
     showAdvancedSearch: false,
     imageLoadFailure: false,
     textOnly: false,
+    mrp: false,
     showExtraData: true,
     cardValueMap: null,
     cardFields: [],
@@ -158,19 +159,20 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
 
   $scope.updateAdvancedSearchText = function($event, $select) {
     $scope.data.advancedValue = $select.search;
-
+    
     if ($event.keyCode === 13) {
       $scope.addAdvancedCondition($select);
       $select.search = "";
     }
   };
-
-
+  
+  
   $scope.addAdvancedCondition = function($select) {
     var textSearch = $scope.data.advancedValue;
     var operator = $scope.data.advancedOperator;
     var fieldName = $scope.data.advancedField;
     var condition = buildRule(fieldName, textSearch, operator);
+    var mrp = $scope.data.mrp
 
     // If no search text, don't do anything
     if (!textSearch || textSearch.trim() === "") {
@@ -332,6 +334,13 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
         data: searchText
       });
     }
+    if (searchText !== "" && $scope.search.searchField === "TRAIT") {
+      andSearches.push({
+              condition: 'contains',
+              field: 'Trait',
+              data: searchText
+      });
+    }
     if (searchText !== "" && $scope.search.searchField === "NAME") {
       andSearches.push({
               condition: 'contains',
@@ -339,13 +348,19 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
               data: searchText
       });
     }
-
     if ($scope.search.type !== "ALL") {
       var requiredType = CDFService.getTypeSearchStringFromType($scope.search.type);
       andSearches.push({
         condition: 'contains',
         field: 'Type',
         data: requiredType
+      });
+    }
+    if ($scope.data.mrp) {
+      andSearches.push({
+              condition: '=',
+              field: 'MRP',
+              data: "MRP"
       });
     }
     console.log("andSearches:", andSearches);
@@ -479,6 +494,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
   }
 
   function swapActiveDataWithLoadedData(downloadedData) {
+    console.log("downloadedData, cardValueMap: ", downloadedData.cardValueMap)
     $scope.data.cardList = downloadedData.cardList;
     $scope.data.sets = downloadedData.sets;
     $scope.data.loading7thSea = downloadedData.loading7thSea;
@@ -502,6 +518,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
       var cachedDataString = localStorage.getItem(LOCAL_STORAGE_DATA_KEY);
       if (cachedDataString) {
         var cachedData = JSON.parse(cachedDataString);
+        console.log("loadCachedData: ", cachedData);
 
         $scope.data.cardList = cachedData.cardList;
         $scope.data.sets = cachedData.sets;
@@ -580,7 +597,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
       var card = cards[i];
       $scope.downloadedData.cardList.push(card);
     }
-    console.log($scope.downloadedData.cardList);
+    // console.log($scope.downloadedData.cardList);
   }
 
   /**
@@ -691,6 +708,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
   }
 
   function compareField(compareType, cardField, valueToCompare) {
+    // console.log("compateField:", compareType, cardField, valueToCompare);
     if (compareType === '=') {
       return cardField == valueToCompare; //jshint ignore:line
     } else if (compareType === 'not') {
@@ -782,7 +800,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
    * Match cards based on a given rule
    */
      function getCardsMatchingSimpleRule(rule) {
-      console.log("getCardsMatchingSimpleRule: ", rule);
+      // console.log("getCardsMatchingSimpleRule: ", rule);
       var matches = [];
       for (var i = 0; i < $scope.data.cardList.length; i++) {
         var card = $scope.data.cardList[i];
@@ -801,7 +819,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
         }
         
       }
-      console.log("matches: ", matches, "$scope.data.matches",  $scope.data.matches);
+      // console.log("matches: ", matches, "$scope.data.matches",  $scope.data.matches);
       return matches;
     }
 
@@ -810,7 +828,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
    */
   function getCardsMatchingRuleGroup(group) {
     // Evaluate the group of rules using AND or OR
-    console.log("getCardsMatchingRuleGroup I THINK ISSUE IS HERE", group);
+    // console.log("getCardsMatchingRuleGroup I THINK ISSUE IS HERE", group);
     var firstRule = true;
     var cumulativeCardsMatchingRules = [];
 
@@ -828,7 +846,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
         cumulativeCardsMatchingRules = getCardsInAnyList(cumulativeCardsMatchingRules, cardsMatchingRule);
       }
     }
-    console.log("getCardsMatchingRuleGroup I THINK ISSUE IS HERE", cumulativeCardsMatchingRules);
+    // console.log("getCardsMatchingRuleGroup I THINK ISSUE IS HERE", cumulativeCardsMatchingRules);
     return cumulativeCardsMatchingRules;
   }
 
@@ -889,16 +907,16 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
    * Get cards that match a given rule (may be complex or simple)
    */
   function getCardsMatchingRule(rule) {
-    console.log("getCardsMatchingRuleGroup I THINK ISSUE IS HERE", rule);
+    // console.log("getCardsMatchingRuleGroup I THINK ISSUE IS HERE", rule);
     if (rule.condition) {
 
       // This is a specific condition, not another rule
       const simpleRuleMatch = getCardsMatchingSimpleRule(rule);
-      console.log("simple rule", simpleRuleMatch);
+      // console.log("simple rule", simpleRuleMatch);
       return simpleRuleMatch;
 
     } else if (rule.group) {
-      console.log("rule group", rule.group);
+      // console.log("rule group", rule.group);
       let ruleGroup  = getCardsMatchingRuleGroup(rule.group);
       return ruleGroup;
       
@@ -906,7 +924,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
   }
 
   function clearSearch() {
-    console.log("clear search");
+    // console.log("clear search");
     $scope.search.type = "ALL";
     $scope.search.searchField = "TITLE";
     $scope.search.text = "";
@@ -918,10 +936,10 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
    * Perform a search
    */
   function doSearch() {
-    console.log("do search");
+    // console.log("do search");
     var cumulativeSearch = buildCumulativeSearch();
     var searchToExclude = buildSearchToExclude();
-    console.log("cumulativeSearch", cumulativeSearch,"searchToExclude: ", searchToExclude );
+    // console.log("cumulativeSearch", cumulativeSearch,"searchToExclude: ", searchToExclude );
 
     performSearchAndDisplayResults(cumulativeSearch, searchToExclude);
   }

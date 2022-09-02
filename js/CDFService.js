@@ -235,6 +235,7 @@ cardSearchApp.service('CDFService', [function() {
    * }
    */
   function getCardValueMap(cards) {
+    console.log("getCardValueMap: ", cards);
 
     var fieldValueMap = {};
 
@@ -244,12 +245,17 @@ cardSearchApp.service('CDFService', [function() {
         fieldValueMap[field] = null;
       }
     });
-
+    console.log("fieldValueMap: ", fieldValueMap);
+    
     // Add auto-complete to specific fields
-    fieldValueMap.type = getValuesForFieldName('type', cards);
-    fieldValueMap.set = getValuesForFieldName('set', cards);
-    fieldValueMap.rarity = getValuesForFieldName('rarity', cards);
-
+    fieldValueMap.Type = getValuesForFieldName('Type', cards);
+    fieldValueMap.Set = getValuesForFieldName('Set', cards);
+    fieldValueMap.Rarity = getValuesForFieldName('Rarity', cards);
+    fieldValueMap.Cost = getValuesForFieldName('Cost', cards);
+    fieldValueMap.Faction = getValuesForFieldName('Faction', cards);
+    fieldValueMap.Artist = getValuesForFieldName('Artist', cards);
+    
+    console.log("fieldValueMap updated: ", fieldValueMap);
     // Remove fields that we don't want to show to the user
     delete fieldValueMap.links;
     delete fieldValueMap.links_large;
