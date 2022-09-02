@@ -66,21 +66,25 @@
         <!-- Extra Card Data -->
         <div data-ng-if="data.selectedCard != null" class="cs-extra-data" data-ng-click="clickedCardData($event)">
           <div class="cs-extra-card-data-title">
-            Extra Card Data
+            Other Information:
           </div>
-          <div class="" data-ng-if="data.showExtraData">
-            <div data-ng-if="!hasExtraData(data.selectedCard)" class="cs-no-extra-data">
-              No Additional Information
+          <div class="basicinfocontainer" data-ng-repeat="card in [data.selectedCard] track by $index">
+            <div class="cs-extra-data-column">
+              <b>Flavor: </b><i>{{card.FlavorText}}</i>
+  
+            </div>
+            <div class="cs-extra-data-column">
+              <b>Artist: </b>{{card.Artist}}<br>
+  
+            </div>
+            <div class="cs-extra-data-column">
+              <b>Most Recent Printing? </b>{{ card.MRP }}<br>
+              <b>Changes on MRP:</b> {{ card.ChangesOnMRP }}<br>
+              <b>Errata:</b> {{ card.Errata }}<br>
+  
             </div>
           </div>
-
-          <!-- Pulls -->
-          <div class="cs-extra-data-column">
-            <div class="cs-extra-data-label">Title:</div>
-            <div data-ng-repeat='pull in [data.selectedCard.Name] track by $index'>
-              <div ng-bind-html="pull | to_trusted"></div>
-            </div>
-          </div>
+    
         </div>
 
         <!-- Text Card Display -->
@@ -120,10 +124,10 @@
             <p class="aboutname">
               <div data-ng-repeat="card in [data.selectedCard] track by $index">
                 <b>
-                  <h4>{{card.Name}}</h4>
+                  <h3>{{card.Name}}</h3>
                 </b>
                 <b>
-                  {{card.Type}}
+                  <h4>{{card.Type}}</h4>
                 </b>
               </div>
             </p>
@@ -157,22 +161,10 @@
                 <p>
                   <b>Text</b>: {{card.Text}} <br>
                 </p>
-                <b>Errata:</b> {{card.Errata}}<br>
-                <b>Boarding Attack: </b>{{card.BoardingAttack}}<br><br>
-                <p>
-                  <b>Flavor: </b><i>{{card.FlavorText}}</i><br><br>
-                </p>
+                <b>Boarding Attack: </b>{{card.BoardingAttack}}
                 <b>Rarity</b>: {{card.Rarity}} <br>
                 <b>Set</b>: {{card.Set}}</p>
               </div> 
-              <!-- <div class="basicinfocontainer">
-                <b>Other Information</b>
-                <p class="info"">
-                <b>Artist: </b>{{Artist}}<br>
-                  <b>Most Recent Printing? </b>{{Most Recent Printing}}<br>
-                  <b>Changes on MRP:</b> {{Changes on MRP}}<br>
-                </p>
-              </div> -->
             </div> 
           </div>
 
