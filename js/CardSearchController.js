@@ -321,7 +321,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
       });
     }
     console.log("searchText: ", searchText, "$scope.search:", $scope.search); 
-    if (searchText !== "" && $scope.search.searchField === "GAMETEXT") {
+    if (searchText !== "" && $scope.search.searchField === "TEXT") {
       andSearches.push({
         condition: 'contains',
         field: 'Text',
