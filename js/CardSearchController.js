@@ -293,7 +293,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
     var andSearches = [];
     var searchText = $scope.search.text.toLowerCase().trim();
     console.log("searchText: ", searchText, "$scope.search:", $scope.search); 
-
+    
     // Specific Search Fields
     if (searchText !== "" && $scope.search.searchField === "ALL") {
       andSearches.push({
@@ -315,11 +315,12 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
               field: 'Name',
               data: searchText
             },
-
+            
           ]
         }
       });
     }
+    console.log("searchText: ", searchText, "$scope.search:", $scope.search); 
     if (searchText !== "" && $scope.search.searchField === "GAMETEXT") {
       andSearches.push({
         condition: 'contains',
@@ -327,6 +328,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
         data: searchText
       });
     }
+    console.log("searchText: ", searchText, "$scope.search:", $scope.search); 
     if (searchText !== "" && $scope.search.searchField === "FLAVORTEXT") {
       andSearches.push({
         condition: 'contains',
@@ -334,20 +336,23 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
         data: searchText
       });
     }
+    console.log("searchText: ", searchText, "$scope.search:", $scope.search); 
     if (searchText !== "" && $scope.search.searchField === "TRAIT") {
       andSearches.push({
-              condition: 'contains',
-              field: 'Trait',
-              data: searchText
+        condition: 'contains',
+        field: 'Trait',
+        data: searchText
       });
     }
+    console.log("searchText: ", searchText, "$scope.search:", $scope.search); 
     if (searchText !== "" && $scope.search.searchField === "NAME") {
       andSearches.push({
-              condition: 'contains',
-              field: 'Name',
-              data: searchText
+        condition: 'contains',
+        field: 'Name',
+        data: searchText
       });
     }
+    console.log("searchText: ", searchText, "$scope.search:", $scope.search); 
     if ($scope.search.type !== "ALL") {
       var requiredType = CDFService.getTypeSearchStringFromType($scope.search.type);
       andSearches.push({
@@ -356,13 +361,15 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
         data: requiredType
       });
     }
+    console.log("searchText: ", searchText, "$scope.search:", $scope.search); 
     if ($scope.data.mrp) {
       andSearches.push({
-              condition: '=',
-              field: 'MRP',
-              data: "MRP"
+        condition: '=',
+        field: 'MRP',
+        data: "MRP"
       });
     }
+    console.log("searchText: ", searchText, "$scope.search:", $scope.search); 
     console.log("andSearches:", andSearches);
 
     return andSearches;
