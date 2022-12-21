@@ -160,6 +160,8 @@ button.btn-primary {
   .cs-card-preview-pane {
     height: 100vh;
     position: fixed;
+    width: -moz-available;
+}
   }
 }
 @media(max-width: 992px) {
