@@ -198,8 +198,8 @@ button.btn-primary {
 @media(max-width: 992px) {
   div.cs-card-preview-overlay {
     float: none;
-    margin-left: auto;
-    margin-right: auto;
+/*     margin-left: auto;
+    margin-right: auto; */
     display: inline-grid;
   }
 }
