@@ -161,6 +161,7 @@ button.btn-primary {
     height: 100vh;
     position: fixed;
     width: -moz-available;
+    display: table;
 }
   }
 }
@@ -169,6 +170,7 @@ button.btn-primary {
     height: 100%;
     min-width: 100%;
     background-color: #F3F3F3;
+    display: table;
   }
 }
 
