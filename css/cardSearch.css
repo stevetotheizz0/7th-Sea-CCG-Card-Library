@@ -174,7 +174,6 @@ button.btn-primary {
 
 @media(max-width: 825px) {
   .cs-card-preview-pane {
-    position: fixed;
     display: grid;
   }
 }
