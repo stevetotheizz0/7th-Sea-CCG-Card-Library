@@ -320,7 +320,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
         }
       });
     }
-    console.log("searchText: ", searchText, "$scope.search:", $scope.search); 
+    console.log("searchText: ", searchText, "$scope.search:", $scope.search, "andSearches: ", andSearches); 
     if (searchText !== "" && $scope.search.searchField === "TEXT") {
       andSearches.push({
         condition: 'contains',
@@ -328,7 +328,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
         data: searchText
       });
     }
-    console.log("searchText: ", searchText, "$scope.search:", $scope.search); 
+    console.log("searchText: ", searchText, "$scope.search:", $scope.search, "andSearches: ", andSearches); 
     if (searchText !== "" && $scope.search.searchField === "FLAVORTEXT") {
       andSearches.push({
         condition: 'contains',
@@ -336,7 +336,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
         data: searchText
       });
     }
-    console.log("searchText: ", searchText, "$scope.search:", $scope.search); 
+    console.log("339 searchText: ", searchText, "$scope.search:", $scope.search, "andSearches: ", andSearches); 
     if (searchText !== "" && $scope.search.searchField === "TRAIT") {
       andSearches.push({
         condition: 'contains',
@@ -344,7 +344,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
         data: searchText
       });
     }
-    console.log("searchText: ", searchText, "$scope.search:", $scope.search); 
+    console.log("searchText: ", searchText, "$scope.search:", $scope.search, "andSearches: ", andSearches); 
     if (searchText !== "" && $scope.search.searchField === "NAME") {
       andSearches.push({
         condition: 'contains',
@@ -352,7 +352,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
         data: searchText
       });
     }
-    console.log("searchText: ", searchText, "$scope.search:", $scope.search); 
+    console.log("355 searchText: ", searchText, "$scope.search:", $scope.search, "andSearches: ", andSearches); 
     if ($scope.search.type !== "ALL") {
       var requiredType = CDFService.getTypeSearchStringFromType($scope.search.type);
       andSearches.push({
@@ -361,7 +361,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
         data: requiredType
       });
     }
-    console.log("searchText: ", searchText, "$scope.search:", $scope.search); 
+    console.log("364 searchText: ", searchText, "$scope.search:", $scope.search, "andSearches: ", andSearches); 
     if ($scope.data.mrp) {
       andSearches.push({
         condition: '=',
@@ -369,8 +369,7 @@ cardSearchApp.controller('CardSearchController', ['$scope', '$document', '$http'
         data: "MRP"
       });
     }
-    console.log("searchText: ", searchText, "$scope.search:", $scope.search); 
-    console.log("andSearches:", andSearches);
+    console.log("372 searchText: ", searchText, "$scope.search:", $scope.search, "andSearches: ", andSearches); 
 
     return andSearches;
   }
